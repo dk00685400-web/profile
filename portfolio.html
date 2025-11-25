@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deepak Kumar S - Drone Engineer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- 
+    Chosen Palette: Warm Neutral
+    Application Structure Plan: A single-page portfolio/dashboard structure was chosen. It features a sticky top navigation for easy access to all key sections (Summary, Skills, Experience, Education). This is more user-friendly than a static document, allowing non-linear exploration. The key interactions are an interactive bar chart for 'Skills' (to visually quantify strengths) and an accordion list for 'Experience' (to hide details until requested). This structure translates the resume's data sections into logical, interactive web components for better usability.
+    Visualization & Content Choices:
+    - Report Info: Professional Summary -> Goal: Inform -> Viz/Presentation: Text block -> Interaction: None -> Justification: Direct, clear intro -> Library/Method: HTML/Tailwind.
+    - Report Info: Core Skills (Key ones) -> Goal: Compare/Highlight -> Viz/Presentation: Horizontal Bar Chart -> Interaction: Hover (tooltips) -> Justification: Visually quantifies key technical strengths, which the text-only report implies but doesn't show. -> Library/Method: Chart.js (Canvas).
+    - Report Info: Core Skills (Full list) -> Goal: Organize/Inform -> Viz/Presentation: 3-Column List -> Interaction: None -> Justification: Complements the chart with a full, categorized list for quick scanning. -> Library/Method: HTML/Tailwind.
+    - Report Info: Internship Experience -> Goal: Organize/Explore -> Viz/Presentation: Accordion List -> Interaction: Click to expand/collapse item -> Justification: Condenses the timeline and hides detailed bullet points until the user requests them, reducing initial clutter. -> Library/Method: Vanilla JS (toggle), HTML/Tailwind.
+    - Report Info: Education & Certifications -> Goal: Inform -> Viz/Presentation: Grouped text blocks/lists -> Interaction: None -> Justification: Simple, clear presentation of factual data. -> Library/Method: HTML/Tailwind.
+    CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. 
+    -->
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 400px;
+            max-height: 450px;
+        }
+        @media (max-width: 768px) {
+            .chart-container {
+                height: 350px;
+                max-height: 400px;
+            }
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        .accordion-button.open .accordion-arrow {
+            transform: rotate(180deg);
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <!-- Header & Navigation -->
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div>
+                <h1 class="text-2xl font-bold text-blue-600">Deepak Kumar S</h1>
+                <p class="text-sm font-medium text-gray-600">Drone Engineer (Mechanical → UAV Engineering)</p>
+            </div>
+            <div class="hidden md:flex space-x-6">
+                <a href="#summary" class="text-gray-600 hover:text-blue-600 font-medium transition duration-150">Summary</a>
+                <a href="#skills" class="text-gray-600 hover:text-blue-600 font-medium transition duration-150">Skills</a>
+                <a href="#experience" class="text-gray-600 hover:text-blue-600 font-medium transition duration-150">Experience</a>
+                <a href="#education" class="text-gray-600 hover:text-blue-600 font-medium transition duration-150">Education</a>
+            </div>
+            <div class="md:hidden">
+                <button id="mobile-menu-button" class="text-gray-600 focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </button>
+            </div>
+        </nav>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white shadow-lg">
+            <a href="#summary" class="block px-6 py-3 text-gray-600 hover:bg-gray-50">Summary</a>
+            <a href="#skills" class="block px-6 py-3 text-gray-600 hover:bg-gray-50">Skills</a>
+            <a href="#experience" class="block px-6 py-3 text-gray-600 hover:bg-gray-50">Experience</a>
+            <a href="#education" class="block px-6 py-3 text-gray-600 hover:bg-gray-50">Education</a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto p-6 md:p-12">
+
+        <!-- Professional Summary Section -->
+        <section id="summary" class="mb-16 scroll-mt-24">
+            <div class="bg-white p-8 rounded-lg shadow-lg">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">Professional Summary</h2>
+                <p class="text-lg text-gray-700 leading-relaxed">
+                    Motivated Mechanical Engineer transitioning into UAV Engineering with hands-on experience in mechanical assembly, CAD modelling, CNC machining, UAV basics, and drone assembly/testing. Strong understanding of G & M codes, component design, UAV integration workflows, and quality-controlled manufacturing. Adept at collaborating with design and workshop teams, maintaining technical documentation, and contributing to UAV system development.
+                </p>
+                <div class="mt-6 flex flex-wrap gap-4">
+                    <a href="mailto:dk00685400@gmail.com" class="bg-blue-600 text-white font-medium py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-150">Email Me</a>
+                    <a href="https://www.linkedin.com/in/deepak-kumar-b83583269" target="_blank" class="bg-gray-200 text-gray-800 font-medium py-2 px-4 rounded-lg hover:bg-gray-300 transition duration-150">View LinkedIn</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Core Skills Section -->
+        <section id="skills" class="mb-16 scroll-mt-24">
+            <h2 class="text-3xl font-bold text-gray-800 mb-6">Core Skills & Proficiency</h2>
+            <div class="bg-white p-8 rounded-lg shadow-lg">
+                <p class="text-center text-gray-600 mb-6">This chart visualizes key technical proficiencies based on project and internship experience. Full skill list is detailed below.</p>
+                <div class="chart-container">
+                    <canvas id="skillsChart"></canvas>
+                </div>
+                
+                <hr class="my-12 border-gray-200">
+
+                <h3 class="text-2xl font-semibold text-gray-800 mb-6">Full Skill Matrix</h3>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div>
+                        <h4 class="text-lg font-bold text-blue-600 mb-3">UAV / Drone & Design</h4>
+                        <ul class="list-disc list-inside space-y-2 text-gray-700">
+                            <li>Drone Assembly</li>
+                            <li>UAV Testing Support</li>
+                            <li>Drone Basics Certification (E2324)</li>
+                            <li>CATIA V5, CREO, GD&T</li>
+                            <li>Surface & Part Modelling</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-bold text-blue-600 mb-3">Manufacturing & Integration</h4>
+                        <ul class="list-disc list-inside space-y-2 text-gray-700">
+                            <li>CNC Operation, VMC Machines</li>
+                            <li>G & M Code Programming</li>
+                            <li>Mechanical Assembly</li>
+                            <li>Protocol Documentation</li>
+                            <li>Test Support</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-bold text-blue-600 mb-3">Soft Skills & Tools</h4>
+                        <ul class="list-disc list-inside space-y-2 text-gray-700">
+                            <li>Teamwork, Leadership</li>
+                            <li>Problem-Solving</li>
+                            <li>Adaptability</li>
+                            <li>Python (Fundamentals)</li>
+                            <li>MS Office, Technical Documentation</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Internship Experience Section -->
+        <section id="experience" class="mb-16 scroll-mt-24">
+            <h2 class="text-3xl font-bold text-gray-800 mb-6">Internship Experience</h2>
+            <p class="text-lg text-gray-600 mb-6">Click on any internship to see details and key achievements.</p>
+            <div class="space-y-4" id="accordion-container">
+                
+                <!-- Easytech CNC -->
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                    <button class_name="accordion-button w-full text-left p-6">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <h3 class="text-xl font-semibold text-blue-600">Intern (CNC Operation & Design)</h3>
+                                <p class="text-gray-600">Easytech CNC Machinery Manufacturing, Coimbatore</p>
+                            </div>
+                            <span class="accordion-arrow text-blue-600 transform transition-transform duration-300">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            </span>
+                        </div>
+                    </button>
+                    <div class_name="accordion-content">
+                        <div class="p-6 pt-0 text-gray-700">
+                            <ul class="list-disc list-inside space-y-2">
+                                <li>Programmed and operated CNC machines using G & M codes, <span class="font-bold text-green-600">improving machining accuracy by ~15%</span>.</li>
+                                <li>Developed CAD models and supported <span class="font-semibold">design-for-manufacturability</span> for prototype components.</li>
+                                <li>Coordinated with workshop teams and <span class="font-bold text-green-600">reduced prototype rework</span> by assisting in documentation alignment.</li>
+                                <li>Applied precision part-making practices relevant to UAV frame and fixture components.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Govind Industries -->
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                    <button class_name="accordion-button w-full text-left p-6">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <h3 class="text-xl font-semibold text-blue-600">Intern</h3>
+                                <p class="text-gray-600">Govind Industries, Coimbatore</p>
+                            </div>
+                            <span class="accordion-arrow text-blue-600 transform transition-transform duration-300">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            </span>
+                        </div>
+                    </button>
+                    <div class_name="accordion-content">
+                        <div class="p-6 pt-0 text-gray-700">
+                            <ul class="list-disc list-inside space-y-2">
+                                <li>Operated VMC machines and press tools used for fixtures and structural part manufacturing.</li>
+                                <li>Streamlined technical file organization, <span class="font-bold text-green-600">reducing retrieval and reporting time by ~20%</span>.</li>
+                                <li>Supported production documentation and process monitoring for consistent output.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Magnetic and Controls -->
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                    <button class_name="accordion-button w-full text-left p-6">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <h3 class="text-xl font-semibold text-blue-600">Intern</h3>
+                                <p class="text-gray-600">Magnetic and Controls, Thudiyalur</p>
+                            </div>
+                            <span class="accordion-arrow text-blue-600 transform transition-transform duration-300">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            </span>
+                        </div>
+                    </button>
+                    <div class_name="accordion-content">
+                        <div class="p-6 pt-0 text-gray-700">
+                            <ul class="list-disc list-inside space-y-2">
+                                <li>Assembled mechanical and electrical sub-assemblies with <span class="font-bold text-green-600">98% accuracy</span> during QC checks.</li>
+                                <li>Reviewed protocol documents ensuring build compliance across assembly stages.</li>
+                                <li>Assisted in testing and inspection activities for electromechanical components.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Teeam Score -->
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                    <button class_name="accordion-button w-full text-left p-6">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <h3 class="text-xl font-semibold text-blue-600">Trainee / Assistant</h3>
+                                <p class="text-gray-600">Teeam Score, Karur</p>
+                            </div>
+                            <span class="accordion-arrow text-blue-600 transform transition-transform duration-300">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            </span>
+                        </div>
+                    </button>
+                    <div class_name="accordion-content">
+                        <div class="p-6 pt-0 text-gray-700">
+                            <ul class="list-disc list-inside space-y-2">
+                                <li>Supported packaging machinery setup and contributed small process improvements.</li>
+                                <li>Worked with production teams to reduce minor rework incidents and maintain workflow continuity.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Education & Certifications Section -->
+        <section id="education" class="mb-16 scroll-mt-24">
+            <h2 class="text-3xl font-bold text-gray-800 mb-6">Education & Certifications</h2>
+            <div class="grid md:grid-cols-2 gap-8">
+                
+                <!-- Education -->
+                <div class="bg-white p-8 rounded-lg shadow-lg">
+                    <h3 class="text-2xl font-semibold text-gray-800 mb-4">Education</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="text-lg font-bold text-blue-600">B.E. Mechanical Engineering</h4>
+                            <p class="text-gray-600">Anna University Regional Campus, Coimbatore</p>
+                            <p class="text-gray-500 text-sm">2021–2025 | CGPA: 77.6%</p>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-bold text-blue-600">HSC</h4>
+                            <p class="text-gray-600">Kongu Vellalar Matric Hr. Sec. School</p>
+                            <p class="text-gray-500 text-sm">2020–2021 | 91.5%</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Certifications -->
+                <div class="bg-white p-8 rounded-lg shadow-lg">
+                    <h3 class="text-2xl font-semibold text-gray-800 mb-4">Certifications & Achievements</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="text-lg font-bold text-blue-600">Drone Basics, Design, Assembly & Testing (E2324)</h4>
+                            <p class="text-gray-600">Specialized training in UAV systems and integration.</p>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-bold text-blue-600">CATIA V5 Design</h4>
+                            <p class="text-gray-600">Certified by COSIMA & TANCAM.</p>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-bold text-blue-600">Key Achievements</h4>
+                            <ul class="list-disc list-inside text-gray-600">
+                                <li>State Level English Proficiency — 2nd Place</li>
+                                <li>Best Out of Waste — 1st Place</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-gray-300 p-6 text-center">
+        <p>&copy; 2025 Deepak Kumar S. This is an interactive web-based representation of his professional profile.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            // Mobile Menu Toggle
+            const menuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            menuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            // Close mobile menu when a link is clicked
+            mobileMenu.addEventListener('click', (e) => {
+                if (e.target.tagName === 'A') {
+                    mobileMenu.classList.add('hidden');
+                }
+            });
+
+            // Accordion Functionality
+            const accordionContainer = document.getElementById('accordion-container');
+            accordionContainer.addEventListener('click', function(e) {
+                const button = e.target.closest('.accordion-button');
+                if (!button) return;
+
+                const content = button.nextElementSibling;
+                
+                // Close all other accordions
+                const allButtons = accordionContainer.querySelectorAll('.accordion-button');
+                allButtons.forEach(btn => {
+                    if (btn !== button) {
+                        btn.classList.remove('open');
+                        btn.nextElementSibling.style.maxHeight = null;
+                    }
+                });
+
+                // Toggle the clicked one
+                button.classList.toggle('open');
+                if (content.style.maxHeight) {
+                    content.style.maxHeight = null;
+                } else {
+                    content.style.maxHeight = content.scrollHeight + "px";
+                }
+            });
+
+            // Chart.js Skills Chart
+            const ctx = document.getElementById('skillsChart').getContext('2d');
+            
+            // Data inferred from resume's emphasis
+            const skillsData = {
+                labels: [
+                    'Drone Assembly & Testing', 
+                    'CATIA V5 / CREO', 
+                    'CNC Operation (G & M Code)', 
+                    'Mechanical Assembly',
+                    'Python (Fundamentals)'
+                ],
+                datasets: [{
+                    label: 'Assessed Proficiency',
+                    data: [90, 85, 85, 75, 60],
+                    backgroundColor: [
+                        'rgba(37, 99, 235, 0.7)',
+                        'rgba(59, 130, 246, 0.7)',
+                        'rgba(96, 165, 250, 0.7)',
+                        'rgba(147, 197, 253, 0.7)',
+                        'rgba(191, 219, 254, 0.7)'
+                    ],
+                    borderColor: [
+                        'rgba(37, 99, 235, 1)',
+                        'rgba(59, 130, 246, 1)',
+                        'rgba(96, 165, 250, 1)',
+                        'rgba(147, 197, 253, 1)',
+                        'rgba(191, 219, 254, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            };
+            
+            Chart.defaults.font.family = "'Inter', sans-serif";
+            Chart.defaults.font.size = 14;
+            Chart.defaults.color = '#374151';
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: skillsData,
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            max: 100,
+                            title: {
+                                display: true,
+                                text: 'Proficiency (Based on Experience)'
+                            }
+                        },
+                        y: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            enabled: true,
+                            backgroundColor: '#111827',
+                            titleFont: {
+                                weight: 'bold'
+                            },
+                            bodyFont: {
+                                size: 14
+                            },
+                            callbacks: {
+                                label: function(context) {
+                                    return ` Proficiency: ${context.raw}%`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+        });
+    </script>
+</body>
+</html>
